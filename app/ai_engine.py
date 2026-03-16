@@ -16,7 +16,8 @@ class MobileNetV4Classifier(nn.Module):
         self.backbone = timm.create_model(model_name, pretrained=False, num_classes=0)
         
         # Get the number of features from the backbone
-        # For MobileNetV4, this is usually via num_features or similar
+        # Set to eval to avoid BatchNorm errors with batch size 1
+        self.backbone.eval()
         dummy_input = torch.zeros(1, 3, 224, 224)
         with torch.no_grad():
             features = self.backbone(dummy_input)
