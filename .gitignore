@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+.env
+inspection.db
+models/
+captures/
