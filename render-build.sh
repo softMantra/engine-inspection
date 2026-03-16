@@ -9,7 +9,7 @@ pip install -r requirements.txt
 mkdir -p models
 
 # Extracted ID from the link provided by user
-GDRIVE_FILE_ID="1NGPQ8HbtE9Ioc5_S6fPDaKjJ0nGklGx-"
+GDRIVE_FILE_ID="https://drive.google.com/file/d/1NGPQ8HbtE9Ioc5_S6fPDaKjJ0nGklGx-/view?usp=sharing"
 
 # Check if model already exists
 if [ ! -f "models/best.pth" ]; then
