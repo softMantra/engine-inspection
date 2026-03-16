@@ -26,7 +26,7 @@ class ViTClassifier(nn.Module):
         return self.head(self.backbone(x))
 
 class AIInspectionEngine:
-    def __init__(self, detection_model_path="models/engine_best (1).pt", classification_model_path="models/best.pth"):
+    def __init__(self, detection_model_path="models\engine_best (1).pt", classification_model_path="models/best.pth"):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print(f"Using device: {self.device} for Inference")
         
