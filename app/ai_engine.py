@@ -26,10 +26,10 @@ class MobileNetV4Classifier(nn.Module):
         self.head = nn.Sequential(
             nn.LayerNorm(dim),
             nn.Dropout(dropout),
-            nn.Linear(dim, 256),
+            nn.Linear(dim, 512),
             nn.GELU(),
             nn.Dropout(dropout / 2),
-            nn.Linear(256, num_classes),
+            nn.Linear(512, num_classes),
         )
 
     def forward(self, x):
