@@ -180,16 +180,14 @@
 
                                 <!-- Live Verdict Overlay (shown during auto-inspection) -->
                                 <div id="live-verdict-overlay" style="display:none; position:absolute; top:12px; right:12px;
-                                     background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); border-radius:12px;
-                                     padding:14px 20px; z-index:20; min-width:160px; text-align:center;
-                                     border:1px solid rgba(255,255,255,0.1);">
-                                    <div id="live-verdict-icon" style="font-size:32px; margin-bottom:4px;">—</div>
+                                     background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); border-radius:30px;
+                                     padding:8px 16px; z-index:20; display:flex; align-items:center; gap:8px;
+                                     border:1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                                    <div id="live-verdict-icon" style="font-size:18px; line-height:1;">—</div>
                                     <div id="live-verdict-text"
-                                        style="font-size:22px; font-weight:800; letter-spacing:1px;">WAITING</div>
-                                    <div id="live-verdict-conf" style="font-size:12px; opacity:0.7; margin-top:4px;">
-                                    </div>
-                                    <div id="live-verdict-class" style="font-size:11px; opacity:0.5; margin-top:2px;">
-                                    </div>
+                                        style="font-size:14px; font-weight:700; letter-spacing:0.5px; line-height:1;">WAITING</div>
+                                    <div id="live-verdict-conf" style="font-size:11px; opacity:0.8; margin-left:4px; font-family:monospace;"></div>
+                                    <div id="live-verdict-class" style="display:none;"></div>
                                 </div>
                             </div>
 

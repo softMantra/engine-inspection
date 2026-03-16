@@ -3,5 +3,5 @@ __pycache__/
 *.pyc
 .env
 inspection.db
-models/
+models/best.pth
 captures/
