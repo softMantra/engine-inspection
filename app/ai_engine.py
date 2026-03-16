@@ -8,11 +8,20 @@ import numpy as np
 import os
 import timm
 
-class ViTClassifier(nn.Module):
+class MobileNetV4Classifier(nn.Module):
     def __init__(self, model_name, num_classes, dropout=0.1):
         super().__init__()
+        # Using timm to create MobileNetV4. 
+        # Common names: mobilenetv4_conv_small, mobilenetv4_conv_medium, etc.
         self.backbone = timm.create_model(model_name, pretrained=False, num_classes=0)
-        dim = self.backbone.embed_dim
+        
+        # Get the number of features from the backbone
+        # For MobileNetV4, this is usually via num_features or similar
+        dummy_input = torch.zeros(1, 3, 224, 224)
+        with torch.no_grad():
+            features = self.backbone(dummy_input)
+            dim = features.shape[1]
+            
         self.head = nn.Sequential(
             nn.LayerNorm(dim),
             nn.Dropout(dropout),
@@ -26,7 +35,7 @@ class ViTClassifier(nn.Module):
         return self.head(self.backbone(x))
 
 class AIInspectionEngine:
-    def __init__(self, detection_model_path="models/engine_best (1).pt", classification_model_path="models/best.pth"):
+    def __init__(self, detection_model_path="models/engine_best (2).pt", classification_model_path="models/saddle_best.pth"):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         print(f"Using device: {self.device} for Inference")
         
@@ -41,7 +50,7 @@ class AIInspectionEngine:
         # Load Classification Model
         try:
             self.cls_model, self.class_names, self.img_size = self._load_classification_model(classification_model_path, self.device)
-            print("ViT classification model loaded.")
+            print(f"MobileNetV4 classification model loaded from {classification_model_path}")
         except Exception as e:
             print(f"Error loading classification model: {e}")
             self.cls_model = None
@@ -53,13 +62,18 @@ class AIInspectionEngine:
 
     def _load_classification_model(self, path, device):
         ckpt = torch.load(path, map_location=device, weights_only=False)
-        model = ViTClassifier(
-            ckpt.get("model_name",  "vit_base_patch16_224"),
-            ckpt.get("num_classes", 3),
+        # Default to a mobilenetv4 variant if not specified
+        model_name = ckpt.get("model_name", "mobilenetv4_conv_small")
+        num_classes = ckpt.get("num_classes", 3)
+        
+        model = MobileNetV4Classifier(
+            model_name,
+            num_classes,
         ).to(device)
+        
         model.load_state_dict(ckpt["model_state"])
         model.eval()
-        class_names = ckpt.get("class_names", [f"class_{i}" for i in range(ckpt.get("num_classes", 3))])
+        class_names = ckpt.get("class_names", [f"class_{i}" for i in range(num_classes)])
         img_size = ckpt.get("img_size", 224)
         return model, class_names, img_size
 
