@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const verdictConf = document.getElementById('live-verdict-conf');
     const verdictClass = document.getElementById('live-verdict-class');
     const sessionStatsBar = document.getElementById('auto-session-stats');
+    const bboxCanvas = document.getElementById('bbox-canvas');
 
     // ================= NAVIGATION =================
     const navItems = document.querySelectorAll('.nav-item');
@@ -292,6 +293,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Hide auto-inspection UI
         if (verdictOverlay) verdictOverlay.style.display = 'none';
+        // Hide bbox overlay canvas
+        if (bboxCanvas) bboxCanvas.style.display = 'none';
         // Keep session stats visible so user can see the final tally
 
         if (liveWs) {
@@ -357,9 +360,31 @@ document.addEventListener('DOMContentLoaded', function () {
             updateVerdictOverlay(verdict, null, "Engine & Saddles", null);
             updateSessionStatsUI();
 
-            // Render returned annotated image (base64 string) to scan box if needed
-            // showScanResult({ ...result, status: verdict });
+            // Render returned annotated image (with bounding boxes) onto the overlay canvas
+            if (result.image && bboxCanvas) {
+                renderBBoxOverlay(result.image);
+            }
         }
+    }
+
+    // ================= Bounding Box Overlay Renderer =================
+    function renderBBoxOverlay(dataUrl) {
+        if (!bboxCanvas || !feedImg) return;
+
+        const img = new Image();
+        img.onload = () => {
+            // Match canvas intrinsic size to the video's natural resolution
+            bboxCanvas.width = feedImg.videoWidth || img.naturalWidth || 640;
+            bboxCanvas.height = feedImg.videoHeight || img.naturalHeight || 480;
+
+            const ctx = bboxCanvas.getContext('2d');
+            ctx.clearRect(0, 0, bboxCanvas.width, bboxCanvas.height);
+            ctx.drawImage(img, 0, 0, bboxCanvas.width, bboxCanvas.height);
+
+            // Make the overlay visible
+            bboxCanvas.style.display = 'block';
+        };
+        img.src = dataUrl;
     }
 
     // ================= Live Verdict Overlay Updates =================
